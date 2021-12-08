@@ -1,0 +1,19 @@
+### R3 internet
+
+enable
+configure terminal
+
+hostname R3
+interface f0/0
+no shutdown
+ip address 10.0.0.254 255.0.0.0
+exit
+interface f0/1
+no shutdown
+ip address 20.0.0.254 255.0.0.0
+exit
+ip route 10.0.0.0 255.0.0.0 10.0.0.253
+ip route 20.0.0.0 255.0.0.0 20.0.0.253
+
+end
+wr me

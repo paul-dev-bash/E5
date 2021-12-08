@@ -1,0 +1,33 @@
+en
+conf t
+
+vlan 10
+vlan 20
+vlan 30
+vlan 40
+
+int r g0/1-2
+swi m t
+
+int r f0/1 - 9
+description VLAN PC
+swi m a
+swi a vlan 20
+
+int r f0/10 - 19
+description VLAN imprimante
+swi m a
+swi a vlan 30
+
+int f0/20
+description VLAN wifi interne
+swi m a
+swi a vlan 20
+
+int f0/21
+description VLAN wifi inviter
+swi m a
+swi a vlan 40
+
+end
+wr me
