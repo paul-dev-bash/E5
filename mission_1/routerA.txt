@@ -1,0 +1,53 @@
+enable
+configure terminal
+
+
+interface FastEthernet 0/0
+no shutdown
+interface FastEthernet 0/0.10
+ip nat inside
+exit
+
+interface FastEthernet 0/1
+no shutdown
+ip address 10.0.0.253 255.0.0.0
+ip nat outside
+exit
+
+ip route 0.0.0.0 0.0.0.0 10.0.0.254
+
+access-list 100 deny ip 192.168.10.0 0.0.0.255 192.168.21.0 0.0.0.255
+access-list 100 permit ip 192.168.10.0 0.0.0.255 any
+ip nat inside source list 100 interface FastEthernet 0/1 overload
+
+
+crypto isakmp enable
+crypto isakmp policy 10
+encryption aes
+authentication pre-share
+hash sha
+group 2
+lifetime 86400
+exit
+
+crypto isakmp key CLESECRETE address 20.0.0.253
+
+crypto ipsec transform-set VPNLABO esp-aes esp-sha-hmac
+crypto ipsec security-association lifetime seconds 86400
+ip access-list extended VPN
+permit ip 192.168.10.0 0.0.0.255 192.168.21.0 0.0.0.255
+exit
+
+crypto map CARTEVPN 10 ipsec-isakmp
+match address VPN
+set peer 20.0.0.253
+set transform-set VPNLABO
+exit
+
+interface FastEthernet 0/1
+crypto map CARTEVPN
+
+
+end
+wr me
+
